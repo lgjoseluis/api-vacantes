@@ -1,14 +1,11 @@
 package com.local.vacantes.application.service;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.local.vacantes.application.dto.VacanteDto;
 import com.local.vacantes.domain.model.Vacante;
 import com.local.vacantes.domain.model.Categoria;
-import com.local.vacantes.domain.repository.VacantesRepository;
 import com.local.vacantes.infrastructure.persistence.JpaCategoriasRepository;
 import com.local.vacantes.infrastructure.persistence.JpaVacantesRepository;
 import com.local.vacantes.utils.Result;

@@ -2,7 +2,6 @@ package com.local.vacantes.utils.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import com.local.vacantes.application.dto.VacanteDto;
 import com.local.vacantes.domain.model.Categoria;
