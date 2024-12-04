@@ -2,12 +2,14 @@ package com.local.vacantes.infrastructure.configuration;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -84,6 +86,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    //@ExceptionHandler(HttpMessageNotReadableException.class)
+    @Override
+    public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    	String error = "Invalid JSON or request body"; //ex.getMessage();
+    	
+    	ProblemDetails apiError = new ProblemDetails(
+    			HttpStatus.BAD_REQUEST.value(), 
+        		HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        		error,
+        		request.getDescription(false), 
+        		Collections.singletonList(ex.getLocalizedMessage()));
+    	
+    	return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+    
     // Manejo de excepciones genéricas
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetails> handleAllExceptions(Exception ex, WebRequest request) {
