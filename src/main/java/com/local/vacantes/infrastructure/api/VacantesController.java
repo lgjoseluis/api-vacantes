@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.local.vacantes.application.dto.UsuarioDto;
 import com.local.vacantes.application.dto.VacanteDto;
 import com.local.vacantes.application.service.VacantesService;
 import com.local.vacantes.utils.Result;
