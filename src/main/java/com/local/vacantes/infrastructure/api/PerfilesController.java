@@ -1,5 +1,6 @@
 package com.local.vacantes.infrastructure.api;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class PerfilesController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Result<PerfilDto>> findById(@PathVariable Integer id){		
-		logger.info("ID del perfil a consultar: " + id);
+		logger.info(String.format("ID del perfil a consultar: %s", id));
 		
 		Result<PerfilDto> result = service.getById(id);
 		
@@ -69,7 +70,7 @@ public class PerfilesController {
     		@RequestBody 
     		PerfilDto perfil
     	) {
-		logger.info("Crear perfil: " + perfil.getPerfil());
+		logger.info(String.format("Crear perfil: %s", perfil.getPerfil()));
 		
         Result<PerfilDto> result = service.create(perfil);
         
@@ -79,12 +80,23 @@ public class PerfilesController {
     }
 	
 	@PutMapping("/{id}")
-    public ResponseEntity<Result<PerfilDto>> updateCategoria(
+    public ResponseEntity<Result<PerfilDto>> update(
     		@PathVariable Integer id,
     		@Valid
     		@RequestBody PerfilDto perfilDto
     	) {
-		logger.info("Actualizar perfil: " + id);
+		logger.info(String.format("Actualizar perfil: ", id));
+		
+		if(id != perfilDto.getId()) {
+			Result<PerfilDto> response = Result.failure(
+					"Error al actualizar la información", 
+					Collections.singletonList(String.format("Inconsistencia en el ID del perfil %s -> %s", id, perfilDto.getId()))	
+				); 
+			
+			return ResponseEntity
+					.status(400)
+					.body(response);
+		}
 		
         Result<PerfilDto> result = service.update(id, perfilDto);
 
@@ -99,7 +111,7 @@ public class PerfilesController {
 	
 	@DeleteMapping("/{id}")
     public ResponseEntity<Result<Void>> delete(@PathVariable Integer id) {
-		logger.info("Eliminar perfil: " + id);
+		logger.info(String.format("Eliminar perfil: %s", id));
 		
 		Result<Void> result = service.deleteById(id);
 		

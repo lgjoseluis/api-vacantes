@@ -1,5 +1,6 @@
 package com.local.vacantes.infrastructure.api;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.local.vacantes.application.dto.UsuarioDto;
 import com.local.vacantes.application.dto.VacanteDto;
 import com.local.vacantes.application.service.VacantesService;
 import com.local.vacantes.utils.Result;
@@ -28,7 +30,7 @@ public class VacantesController {
 
 	// GET: Obtiene todas las vacantes de una categoría
 	@GetMapping("/categoria/{categoriaId}")
-	public ResponseEntity<Result<List<VacanteDto>>> getAllVacantes(@PathVariable Integer categoriaId) {
+	public ResponseEntity<Result<List<VacanteDto>>> getAll(@PathVariable Integer categoriaId) {
 		logger.info("Consultar todas las vacantes");
 
 		Result<List<VacanteDto>> result = vacantesService.getAllVacantes(categoriaId);
@@ -43,7 +45,7 @@ public class VacantesController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Result<VacanteDto>> findById(@PathVariable Integer id) {
-		logger.info("ID de la vacante a consultar: " + id);
+		logger.info(String.format("ID de la vacante a consultar: %s", id));
 
 		Result<VacanteDto> result = vacantesService.getById(id);
 
@@ -57,7 +59,7 @@ public class VacantesController {
 
 	@PostMapping("/")
 	public ResponseEntity<Result<VacanteDto>> create(@Valid @RequestBody VacanteDto vacante) {
-		logger.info("Crear vacante: " + vacante.getNombre());
+		logger.info(String.format("Crear vacante: %s", vacante.getNombre()));
 
 		Result<VacanteDto> result = vacantesService.create(vacante);
 
@@ -71,7 +73,18 @@ public class VacantesController {
     		@PathVariable Integer id,
     		@Valid
     		@RequestBody VacanteDto vacanteDto){
-		logger.info("Actualizar vacante: " + id);
+		logger.info(String.format("Actualizar vacante: %s", id));
+		
+		if(id != vacanteDto.getId()) {
+			Result<VacanteDto> response = Result.failure(
+					"Error al actualizar la información", 
+					Collections.singletonList(String.format("Inconsistencia en el ID de la vacante %s -> %s", id, vacanteDto.getId()))	
+				); 
+			
+			return ResponseEntity
+					.status(400)
+					.body(response);
+		}		
 		
 		Result<VacanteDto> result = vacantesService.update(id, vacanteDto);
 		
@@ -86,7 +99,7 @@ public class VacantesController {
 	
 	@DeleteMapping("/{id}")
     public ResponseEntity<Result<Void>> delete(@PathVariable Integer id) {
-		logger.info("Eliminar vacante: " + id);
+		logger.info(String.format("Eliminar vacante: %s", id));
 		
 		Result<Void> result = vacantesService.deleteById(id);
 		

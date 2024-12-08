@@ -1,5 +1,6 @@
 package com.local.vacantes.infrastructure.api;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -48,11 +49,11 @@ public class CategoriasController {
     }
 	
 	@GetMapping("/search")
-    public ResponseEntity<Result<List<CategoriaDto>>> searchCategorias(
+    public ResponseEntity<Result<List<CategoriaDto>>> search(
             @RequestParam String texto,
             @RequestParam int page,
             @RequestParam int size) {
-
+		logger.info("Consultar categorías ...");
         Pageable pageable = PageRequest.of(page, size);
         Result<List<CategoriaDto>> result = categoriasService.findByNombreOrDescripcion(texto, pageable);
 
@@ -65,7 +66,7 @@ public class CategoriasController {
 	
 	@GetMapping(value = "/{id}", produces = "application/json")
 	public ResponseEntity<Result<CategoriaDto>> findById(@PathVariable Integer id) {
-		logger.info("ID de la categoría a consultar: " + id);
+		logger.info(String.format("ID de la categoría a consultar: %s", id));
 		
         Result<CategoriaDto> result = categoriasService.getById(id);
         
@@ -81,7 +82,7 @@ public class CategoriasController {
     		@RequestBody 
     		CategoriaCreateDto categoria
     	) {
-		logger.info("Crear categoria: " + categoria.getNombre());
+		logger.info(String.format("Crear categoria: %s", categoria.getNombre()));
 		
         Result<CategoriaDto> result = categoriasService.create(categoria);
         
@@ -91,25 +92,38 @@ public class CategoriasController {
     }
 	
 	@PutMapping("/{id}")
-    public ResponseEntity<Result<CategoriaDto>> updateCategoria(
+    public ResponseEntity<Result<CategoriaDto>> update(
     		@PathVariable Integer id,
     		@Valid
     		@RequestBody CategoriaDto categoriaDto
     	) {
+		logger.info(String.format("Actualizar categoria: %s", id));
+		
+		if(id != categoriaDto.getId()) {
+			Result<CategoriaDto> response = Result.failure(
+					"Error al actualizar la información", 
+					Collections.singletonList(String.format("Inconsistencia en el ID de la categoría %s -> %s", id, categoriaDto.getId()))	
+				); 
+			
+			return ResponseEntity
+					.status(400)
+					.body(response);
+		}
+		
         Result<CategoriaDto> result = categoriasService.update(id, categoriaDto);
 
         if (result.isSuccess()) {
             return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity
-            		.status(404)
-            		.body(result);
-        }
+        } 
+        
+        return ResponseEntity
+        		.status(404)
+        		.body(result);        
     }
 	
 	@DeleteMapping("/{id}")
     public ResponseEntity<Result<Void>> delete(@PathVariable Integer id) {
-		logger.info("Eliminar categoria: " + id);
+		logger.info(String.format("Eliminar categoria: %s", id));
 		
 		Result<Void> result = categoriasService.deleteById(id);
 		

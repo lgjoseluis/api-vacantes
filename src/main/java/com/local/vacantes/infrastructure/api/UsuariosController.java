@@ -49,7 +49,7 @@ public class UsuariosController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Result<UsuarioDto>> findById(@PathVariable Integer id) {
-		logger.info("ID del usuario a consultar: " + id);
+		logger.info(String.format("ID del usuario a consultar: %s", id));
 		
         Result<UsuarioDto> result = service.getById(id);
         
@@ -68,7 +68,7 @@ public class UsuariosController {
     		@RequestBody 
     		UsuarioDto usuario
     	) {
-		logger.info("Crear usuario: " + usuario.getNombre());
+		logger.info(String.format("Crear usuario: %s", usuario.getNombre()));
 		
         Result<UsuarioDto> result = service.create(usuario);
         
@@ -83,12 +83,13 @@ public class UsuariosController {
     		@Valid
     		@RequestBody UsuarioDto usuarioDto
     	) {
-		logger.info("Actualizar usuario: " + id);
+		logger.info(String.format("Actualizar usuario: %s", id));
 		
 		if(id != usuarioDto.getId()) {
 			Result<UsuarioDto> response = Result.failure(
 					"Error al actualizar la información", 
-					Collections.singletonList(String.format("Inconsistencia en el ID del usuario %s -> %s", id, usuarioDto.getId())			)	); 
+					Collections.singletonList(String.format("Inconsistencia en el ID del usuario %s -> %s", id, usuarioDto.getId()))	
+				); 
 			
 			return ResponseEntity
 					.status(400)
@@ -109,7 +110,7 @@ public class UsuariosController {
 	
 	@DeleteMapping("/{id}")
     public ResponseEntity<Result<Void>> delete(@PathVariable Integer id) {
-		logger.info("Eliminar usuario: " + id);
+		logger.info(String.format("Eliminar usuario: %s", id));
 		
 		Result<Void> result = service.deleteById(id);
 		

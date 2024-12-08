@@ -24,12 +24,14 @@ import com.local.vacantes.infrastructure.persistence.JpaCategoriasRepository;
 public class CategoriasService {
 	private static final Logger logger = LoggerFactory.getLogger(CategoriasService.class);
 	
+	private final MessageService message;
 	private final JpaCategoriasRepository repository;	
 	private final CategoriasMapper categoriasMapper;
 	
-	public CategoriasService(JpaCategoriasRepository categoriasRepository, CategoriasMapper categoriasMapper) {		
+	public CategoriasService(JpaCategoriasRepository categoriasRepository, CategoriasMapper categoriasMapper, MessageService message) {		
 		this.repository = categoriasRepository;
 		this.categoriasMapper = categoriasMapper;
+		this.message = message;
 	} 
 	
 	@Transactional(readOnly = true)
@@ -45,8 +47,8 @@ public class CategoriasService {
 		
 		if(categorias.isEmpty())
 			return Result.failure(
-					"No existen datos a mostrar",
-					Collections.singletonList("No existen datos para visualizar")
+					message.getMessage("generic.message.find.fail"),
+					Collections.singletonList(message.getMessage("generic.message.nodata"))
 				);
 		
 		listCategorias = categorias
@@ -56,7 +58,7 @@ public class CategoriasService {
 		
 		return Result.success(
 				listCategorias,
-				"Consulta realizada con éxito"
+				message.getMessage("generic.message.find.success")
 			);
 	}
 	
@@ -74,12 +76,12 @@ public class CategoriasService {
                     .map(categoriasMapper::toDto)
                     .collect(Collectors.toList());
             
-            return Result.success(listCategorias, "Consulta realizada con éxito");
+            return Result.success(listCategorias, message.getMessage("generic.message.find.success"));
         }
         
         return Result.failure(
-        		"No existen datos a mostrar",                                   
-        		Collections.singletonList("No existen datos para visualizar")
+        		message.getMessage("generic.message.find.fail"),
+				Collections.singletonList(message.getMessage("generic.message.nodata"))
         	);
     }
 	
@@ -100,7 +102,7 @@ public class CategoriasService {
 			logger.info(String.format("La categoría con el ID %s no se encontró", id));
 			
 			return Result.failure(
-					"No existen datos a mostrar", 
+					message.getMessage("generic.message.find.fail"), 
 					Collections.singletonList(String.format("La categoría con el ID %s no se encontró", id))
 				);
 		}
@@ -140,7 +142,7 @@ public class CategoriasService {
 			logger.info(String.format("La categoría con el ID %s no se encontró", id));
 			
 			return Result.failure(
-					"Error al actualizar la información", 
+					message.getMessage("generic.message.update.fail"), 
 					Collections.singletonList(String.format("La categoría con el ID %s no se encontró", id))
 				);
 		}        
@@ -149,7 +151,7 @@ public class CategoriasService {
         
         logger.info("Información actualizada de la categoría con ID "+ id);
         
-        return Result.success(categoriaDto, "Información actualizada exitosamente");        
+        return Result.success(categoriaDto, message.getMessage("generic.message.update.success"));        
     }
 	
 	@Transactional
@@ -161,12 +163,13 @@ public class CategoriasService {
             
             logger.info("Información eliminada de la categoría con ID "+ id);
             
-            return Result.success(null, "Información eliminada exitosamente");
+            return Result.success(null, message.getMessage("generic.message.delete.success"));
         }
             
 		logger.info(String.format("La categoría con el ID %s no se encontró", id));
 		
-		return Result.failure("Error al eliminar la información",
+		return Result.failure(
+				message.getMessage("generic.message.delete.fail"),
 				Collections.singletonList(String.format("La categoría con el ID %s no se encontró", id))
 			);
     }
