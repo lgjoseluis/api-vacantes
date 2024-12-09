@@ -87,7 +87,7 @@ public class VacantesService {
         			Collections.singletonList(String.format("La vacante con el ID %s no se encontró", id))
     			);
         }
-        
+        logger.info(vacanteDto.getNombre());
         return Result.success(vacanteDto, "Consulta realizada con éxito");
     }
     
