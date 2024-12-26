@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,19 +37,26 @@ public class CategoriasController {
 		this.categoriasService = categoriasService;
 	}
 	
-	@GetMapping(value = "/", produces = "application/json")
+	@Deprecated
+	@GetMapping(path = "/")
 	public ResponseEntity<Result<List<CategoriaDto>>> getAll() {
 		logger.info("Consultar todas las categorías");
 		
         Result<List<CategoriaDto>> result = categoriasService.getAll();
         
         if(result.isSuccess())
-        	return ResponseEntity.ok(result);
+        	return ResponseEntity
+        			.status(HttpStatus.OK)
+        			.header("Deprecation", "true")
+        			.header("Deprecation-Notice", "Versión a deprecarse")
+        			.body(result);
         	
-        return ResponseEntity.status(404).body(result);
+        return ResponseEntity
+        		.status(HttpStatus.NOT_FOUND)
+        		.body(result);
     }
 	
-	@GetMapping("/search")
+	@GetMapping(path = "/search")
     public ResponseEntity<Result<List<CategoriaDto>>> search(
             @RequestParam String texto,
             @RequestParam int page,
@@ -64,7 +72,7 @@ public class CategoriasController {
         return ResponseEntity.status(404).body(result);        
     }
 	
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(path = "/{id}")
 	public ResponseEntity<Result<CategoriaDto>> findById(@PathVariable Integer id) {
 		logger.info(String.format("ID de la categoría a consultar: %s", id));
 		
@@ -76,7 +84,7 @@ public class CategoriasController {
         return ResponseEntity.status(404).body(result);
     }
 	
-	@PostMapping(value="/")
+	@PostMapping(path="/")
     public ResponseEntity<Result<CategoriaDto>> create(
     		@Valid
     		@RequestBody 
@@ -91,7 +99,7 @@ public class CategoriasController {
         		.body(result);
     }
 	
-	@PutMapping("/{id}")
+	@PutMapping(path = "/{id}")
     public ResponseEntity<Result<CategoriaDto>> update(
     		@PathVariable Integer id,
     		@Valid
@@ -121,7 +129,7 @@ public class CategoriasController {
         		.body(result);        
     }
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping(path = "/{id}")
     public ResponseEntity<Result<Void>> delete(@PathVariable Integer id) {
 		logger.info(String.format("Eliminar categoria: %s", id));
 		

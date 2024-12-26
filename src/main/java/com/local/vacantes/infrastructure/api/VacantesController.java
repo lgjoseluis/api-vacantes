@@ -21,14 +21,14 @@ import jakarta.validation.Valid;
 public class VacantesController {
 	private static final Logger logger = LoggerFactory.getLogger(VacantesController.class);
 
-	private final VacantesService vacantesService;
+	private final VacantesService vacantesService;	
 
 	public VacantesController(VacantesService vacantesService) {
 		this.vacantesService = vacantesService;
 	}
 
 	// GET: Obtiene todas las vacantes de una categoría
-	@GetMapping("/categoria/{categoriaId}")
+	@GetMapping(path = "/categoria/{categoriaId}")
 	public ResponseEntity<Result<List<VacanteDto>>> getAll(@PathVariable Integer categoriaId) {
 		logger.info("Consultar todas las vacantes");
 
@@ -42,7 +42,7 @@ public class VacantesController {
 				.body(result);
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping(path ="/{id}")
 	public ResponseEntity<Result<VacanteDto>> findById(@PathVariable Integer id) {
 		logger.info(String.format("ID de la vacante a consultar: %s", id));
 
@@ -56,7 +56,7 @@ public class VacantesController {
 				.body(result);
 	}
 
-	@PostMapping("/")
+	@PostMapping(path = "/")
 	public ResponseEntity<Result<VacanteDto>> create(@Valid @RequestBody VacanteDto vacante) {
 		logger.info(String.format("Crear vacante: %s", vacante.getNombre()));
 
@@ -67,7 +67,7 @@ public class VacantesController {
 				.body(result);
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping(path = "/{id}")
     public ResponseEntity<Result<VacanteDto>> update(
     		@PathVariable Integer id,
     		@Valid
@@ -96,7 +96,7 @@ public class VacantesController {
 				.body(result);
 	}
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping(path = "/{id}")
     public ResponseEntity<Result<Void>> delete(@PathVariable Integer id) {
 		logger.info(String.format("Eliminar vacante: %s", id));
 		

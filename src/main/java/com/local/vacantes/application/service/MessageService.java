@@ -30,7 +30,7 @@ public class MessageService {
      */
     public String getMessage(String key, Object... args) {
     	Locale locale = localeResolver.resolveLocale(request);
-    	System.out.println(Locale.getDefault()+ " - " + locale);
+    	
         return messageSource.getMessage(key, args, locale);
     }
 }
